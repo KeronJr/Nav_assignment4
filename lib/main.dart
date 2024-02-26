@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:navigation_assignment_2/login_screens/welcome_screen.dart';
 
 import 'package:provider/provider.dart';
+import 'package:connection_notifier/connection_notifier.dart';
 
-import 'home_screen.dart';
+// import 'home_screen.dart';
 import 'theme_config.dart';
 import 'theme_provider.dart';
 
@@ -29,14 +31,17 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ThemeStateProvider>(builder: (context, theme, child) {
-      return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeConfig.lightTheme,
-        darkTheme: ThemeConfig.darkTheme,
-        themeMode: theme.isDarkTheme ? ThemeMode.dark : ThemeMode.light,
-        home: HomeScreen(),
-      );
-    });
+    return ConnectionNotifier(
+      child: Consumer<ThemeStateProvider>(builder: (context, theme, child) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: ThemeConfig.lightTheme,
+          darkTheme: ThemeConfig.darkTheme,
+          themeMode: theme.isDarkTheme ? ThemeMode.dark : ThemeMode.light,
+          // home: HomeScreen(),
+          home: const WelcomeScreen(),
+        );
+      }),
+    );
   }
 }

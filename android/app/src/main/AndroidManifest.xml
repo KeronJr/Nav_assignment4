@@ -1,4 +1,28 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.fluttercandies.photo_manager_example">
+
+    <!-- Permissions for reading contacts -->
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <!-- Permissions for writing contacts -->
+    <uses-permission android:name="android.permission.WRITE_CONTACTS" />
+    <!-- Permission for sending SMS -->
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <!-- Permission for making phone calls -->
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+
+
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+
+
+   
+
     <application
         android:label="navigation_assignment_2"
         android:name="${applicationName}"
@@ -30,4 +54,13 @@
             android:name="flutterEmbedding"
             android:value="2" />
     </application>
+
+    <queries>
+<!-- If your app makes calls -->
+        <intent>
+            <action android:name="android.intent.action.DIAL" />
+            <data android:scheme="tel" />
+        </intent>
+</queries>
+
 </manifest>

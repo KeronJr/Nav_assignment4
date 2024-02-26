@@ -12,4 +12,5 @@ class SharedPrefServices {
     SharedPreferences pref = await SharedPreferences.getInstance();
     return pref.getBool(key) ?? false;
   }
+  
 }

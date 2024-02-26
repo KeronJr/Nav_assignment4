@@ -6,7 +6,7 @@ class ThemeStateProvider with ChangeNotifier {
   bool _isDarkTheme = false;
   bool get isDarkTheme => _isDarkTheme;
 
-  Future<void> setDarkTheme() async {
+  Future<void> setDarkTheme(bool newValue) async {
     _isDarkTheme = !_isDarkTheme;
     SharedPrefServices.setBoolMethod('THEME_STATUS', _isDarkTheme);
     notifyListeners();

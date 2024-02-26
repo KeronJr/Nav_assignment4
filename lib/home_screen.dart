@@ -1,15 +1,75 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:navigation_assignment_2/calculator/calculator_screen.dart';
 import 'package:provider/provider.dart';
+
 import 'drawer_navigation.dart';
-import 'calculator_screen.dart';
 import 'theme_provider.dart';
 
 class HomeScreen extends StatefulWidget {
+  final GoogleSignInAccount user;
+
+  HomeScreen({required this.user});
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  // String _connectionStatus = 'Unknown'; // Track connectivity status
+
+  late StreamSubscription subscription;
+  bool isDeviceConnected = false;
+  bool isAlertSet = false;
+
+  @override
+  void initState() {
+    // getConnectivity();
+    super.initState();
+  }
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   _initConnectivity(); // Initialize connectivity
+  //   _listenForConnectivityChanges(); // Listen for connectivity changes
+  // }
+
+  // Future<void> _initConnectivity() async {
+  //   bool isConnected = await InternetConnectionChecker().hasConnection;
+  //   setState(() {
+  //     _connectionStatus = isConnected ? 'Connected' : 'Disconnected';
+  //   });
+  // }
+
+  // void _listenForConnectivityChanges() {
+  //   InternetConnectionChecker().onStatusChange.listen((status) {
+  //     setState(() {
+  //       _connectionStatus = status == InternetConnectionStatus.connected
+  //           ? 'Connected'
+  //           : 'Disconnected';
+  //     });
+  //     _showConnectivitySnackbar(); // Show Snackbar for connectivity status
+  //   });
+  // }
+
+  // void _showConnectivitySnackbar() {
+  //   ScaffoldMessenger.of(context).showSnackBar(
+  //     SnackBar(
+  //       content: Text(_connectionStatus),
+  //       duration: Duration(seconds: 2),
+  //     ),
+  //   );
+  // }
+
+  @override
+  void dispose() {
+    subscription.cancel();
+    super.dispose();
+  }
+
   int _selectedIndex = 0;
   final List<Widget> _screens = [
     ScreenOne(),
@@ -31,45 +91,44 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(_appBarTitles[_selectedIndex]), // Dynamic title
-        actions: [
-          IconButton(
-            onPressed: () {
-              context.read<ThemeStateProvider>().setDarkTheme();
-            },
-            icon:
-                context.select((ThemeStateProvider theme) => theme.isDarkTheme)
-                    ? const Icon(Icons.dark_mode_outlined)
-                    : const Icon(Icons.light_mode_outlined),
-          ),
-        ],
       ),
-      body: _screens[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onTabSelected,
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+      body: Column(
+        children: [
+          Expanded(
+            child: _screens[_selectedIndex],
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calculate),
-            label: 'Calculator',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.info),
-            label: 'About',
+          BottomNavigationBar(
+            currentIndex: _selectedIndex,
+            onTap: _onTabSelected,
+            selectedItemColor: Colors.blue,
+            unselectedItemColor: Colors.grey,
+            items: const [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: 'Home',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.calculate),
+                label: 'Calculator',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.info),
+                label: 'About',
+              ),
+            ],
           ),
         ],
       ),
       drawer: DrawerNavigation(
-  onItemSelected: _onTabSelected,
-  selectedIndex: _selectedIndex, // Pass the selected index
-  context: context, // Pass the context
-),
-
+        onItemSelected: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+          Navigator.pop(context); // Close the drawer
+        },
+        selectedIndex: _selectedIndex,
+        user: widget.user,
+      ),
     );
   }
 }
@@ -77,9 +136,9 @@ class _HomeScreenState extends State<HomeScreen> {
 class ScreenOne extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return const Center(
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: Text(
             "Welcome to Keron's car dealership!\n\n"
@@ -111,8 +170,7 @@ class ScreenThree extends StatelessWidget {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment:
-                CrossAxisAlignment.start, // Align text to the start
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 'About Us',
@@ -138,11 +196,9 @@ class ScreenThree extends StatelessWidget {
                   fontSize: 20,
                 ),
               ),
-              SizedBox(height: 10), // Add some spacing between the paragraphs
+              SizedBox(height: 10),
               Row(
-                // Row to align the text at the start
-                crossAxisAlignment:
-                    CrossAxisAlignment.start, // Align text to the start
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     "Keron Junior\n"
@@ -151,13 +207,8 @@ class ScreenThree extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      // fontFamily:
                     ),
                   ),
-                  // Expanded(
-
-                  //   child: Container(),
-                  // ),
                 ],
               ),
             ],
@@ -167,5 +218,3 @@ class ScreenThree extends StatelessWidget {
     );
   }
 }
-
-
